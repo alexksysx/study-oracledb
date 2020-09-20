@@ -1,0 +1,4 @@
+DB_PASSWD=oracle
+DB_BUNDLE=basic
+DB_SID=ORCL
+DB_DOMAIN=localdomain
