@@ -24,8 +24,12 @@ public class Main extends Application {
     }
 
     public static JdbcTemplate getJdbcTemplate() {
+//        Oracle system
 //        DataSource ds = new DriverManagerDataSource("jdbc:oracle:thin:@localhost:1527:orcl", "system", "oracle");
-        DataSource ds = new DriverManagerDataSource("jdbc:oracle:thin:@localhost:1527:orcl", "test_user", "test_user");
+//        H2 db
+        DataSource ds = new DriverManagerDataSource("jdbc:h2:mem:test_mem;MODE=oracle;INIT=RUNSCRIPT FROM 'classpath:/h2init.ddl'", "test_user", "test_user");
+//        Oracle test_user
+//        DataSource ds = new DriverManagerDataSource("jdbc:oracle:thin:@localhost:1527:orcl", "test_user", "test_user");
         return new JdbcTemplate(ds);
     }
 }
