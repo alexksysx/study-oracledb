@@ -3,6 +3,6 @@ module testOracleConnect {
     requires javafx.fxml;
     requires spring.jdbc;
     requires java.sql;
-    exports ru.alexksysx;
+    requires spring.tx;
     opens ru.alexksysx;
 }

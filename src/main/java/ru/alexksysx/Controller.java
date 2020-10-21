@@ -2,9 +2,12 @@ package ru.alexksysx;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
@@ -57,12 +60,21 @@ public class Controller {
         String login = loginInput.getText();
         String password = passwordInput.getText();
         String email = emailInput.getText();
-        int update = jdbcTemplate.update("insert into test_user.users values (?, ?, ?, ?)", id, login, password, email);
+        int update;
+        try {
+            update = jdbcTemplate.update("insert into test_user.users values (?, ?, ?, ?)", id, login, password, email);
+        } catch (DuplicateKeyException e) {
+            createAlert("Запись с таким ключём уже существует", "Ошибка");
+            return;
+        }
         if (update > 0) {
             User user = new User(id, login, password, email);
             usersData.add(user);
         }
-
+        idInput.clear();
+        loginInput.clear();
+        passwordInput.clear();
+        emailInput.clear();
     }
 
     private void createAlert(String message, String title) {
@@ -76,23 +88,69 @@ public class Controller {
 
     @FXML
     private void initialize() {
-
-
         initData();
-
         // устанавливаем тип и значение которое должно хранится в колонке
         idColumn.setCellValueFactory(new PropertyValueFactory<User, Integer>("id"));
         loginColumn.setCellValueFactory(new PropertyValueFactory<User, String>("login"));
         passwordColumn.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<User, String>("email"));
-
         // заполняем таблицу данными
         tableUsers.setItems(usersData);
+        // делаем колонны изменяемыми
+        tableUsers.setEditable(true);
+        loginColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        passwordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        emailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     }
 
     // подготавливаем данные для таблицы
     private void initData() {
         List<User> users = jdbcTemplate.query("select * from test_user.users", new UserRowMapper());
         usersData.addAll(users);
+    }
+
+    public void loginEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
+        User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
+        user.setLogin(userStringCellEditEvent.getNewValue());
+        if (!updateUser(user)) {
+            user.setLogin(userStringCellEditEvent.getOldValue());
+        }
+    }
+
+    public void emailEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
+        User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
+        user.setEmail(userStringCellEditEvent.getNewValue());
+        if (!updateUser(user)) {
+            user.setEmail(userStringCellEditEvent.getOldValue());
+        }
+    }
+
+    public void passwordEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
+        User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
+        user.setPassword(userStringCellEditEvent.getNewValue());
+        if (!updateUser(user)) {
+            user.setPassword(userStringCellEditEvent.getOldValue());
+        }
+    }
+
+    private boolean updateUser(User user) {
+        int update = jdbcTemplate.update("update test_user.users set login = ?, password = ?, email = ? where id = ?",
+                user.getLogin(), user.getPassword(), user.getEmail(), user.getId());
+        return update > 0;
+    }
+
+    private boolean deleteRow(User user) {
+        int delete = jdbcTemplate.update("delete from test_user.users where id = ?", user.getId());
+        return delete > 0;
+    }
+
+    public void deleteRow(ActionEvent actionEvent) {
+        int index = tableUsers.getSelectionModel().getFocusedIndex();
+        if (index == -1)
+            return;
+        User user = tableUsers.getItems().get(index);
+        if (deleteRow(user)) {
+            tableUsers.getItems().remove(index);
+        }
     }
 }
