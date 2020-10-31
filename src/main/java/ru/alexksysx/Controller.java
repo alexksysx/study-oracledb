@@ -14,41 +14,37 @@ import java.util.List;
 
 
 public class Controller {
-    private ObservableList<User> usersData = FXCollections.observableArrayList();
+    private ObservableList<Bus> busesData = FXCollections.observableArrayList();
     private JdbcTemplate jdbcTemplate = Main.getJdbcTemplate();
 
     @FXML
-    private TableView<User> tableUsers;
+    private TableView<Bus> tableBuses;
 
     @FXML
-    private TableColumn<User, Integer> idColumn;
+    private TableColumn<Bus, Integer> idColumn;
 
     @FXML
-    private TableColumn<User, String> loginColumn;
+    private TableColumn<Bus, String> busNameColumn;
 
     @FXML
-    private TableColumn<User, String> passwordColumn;
+    private TableColumn<Bus, String> busNumberColumn;
 
     @FXML
-    private TableColumn<User, String> emailColumn;
+    private TableColumn<Bus, String> busModelColumn;
 
     @FXML
     private TextField idInput;
 
     @FXML
-    private TextField loginInput;
+    private TextField busNameInput;
 
     @FXML
-    private TextField passwordInput;
+    private TextField busNumberInput;
 
     @FXML
-    private TextField emailInput;
+    private TextField busModelInput;
 
-    @FXML
-    private Button insertButton;
-
-    @FXML
-    private void insertRow() {
+    public void insertRow() {
         Integer id;
         try {
             id = Integer.parseInt(idInput.getText());
@@ -57,24 +53,24 @@ public class Controller {
             createAlert("Здесь нужно ввести число", "Ошибка");
             return;
         }
-        String login = loginInput.getText();
-        String password = passwordInput.getText();
-        String email = emailInput.getText();
+        String name = busNameInput.getText();
+        String number = busNumberInput.getText();
+        String model = busModelInput.getText();
         int update;
         try {
-            update = jdbcTemplate.update("insert into test_user.users values (?, ?, ?, ?)", id, login, password, email);
+            update = jdbcTemplate.update("insert into test_user.buses values (?, ?, ?, ?)", id, name, number, model);
         } catch (DuplicateKeyException e) {
             createAlert("Запись с таким ключём уже существует", "Ошибка");
             return;
         }
         if (update > 0) {
-            User user = new User(id, login, password, email);
-            usersData.add(user);
+            Bus bus = new Bus(id, name, number, model);
+            busesData.add(bus);
         }
         idInput.clear();
-        loginInput.clear();
-        passwordInput.clear();
-        emailInput.clear();
+        busNameInput.clear();
+        busNumberInput.clear();
+        busModelInput.clear();
     }
 
     private void createAlert(String message, String title) {
@@ -90,67 +86,67 @@ public class Controller {
     private void initialize() {
         initData();
         // устанавливаем тип и значение которое должно хранится в колонке
-        idColumn.setCellValueFactory(new PropertyValueFactory<User, Integer>("id"));
-        loginColumn.setCellValueFactory(new PropertyValueFactory<User, String>("login"));
-        passwordColumn.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<User, String>("email"));
+        idColumn.setCellValueFactory(new PropertyValueFactory<Bus, Integer>("id"));
+        busNameColumn.setCellValueFactory(new PropertyValueFactory<Bus, String>("name"));
+        busNumberColumn.setCellValueFactory(new PropertyValueFactory<Bus, String>("number"));
+        busModelColumn.setCellValueFactory(new PropertyValueFactory<Bus, String>("model"));
         // заполняем таблицу данными
-        tableUsers.setItems(usersData);
+        tableBuses.setItems(busesData);
         // делаем колонны изменяемыми
-        tableUsers.setEditable(true);
-        loginColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        passwordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        emailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        tableBuses.setEditable(true);
+        busNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        busNumberColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        busModelColumn.setCellFactory(TextFieldTableCell.forTableColumn());
     }
 
     // подготавливаем данные для таблицы
     private void initData() {
-        List<User> users = jdbcTemplate.query("select * from test_user.users", new UserRowMapper());
-        usersData.addAll(users);
+        List<Bus> buses = jdbcTemplate.query("select * from test_user.buses", new BusRowMapper());
+        busesData.addAll(buses);
     }
 
-    public void loginEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
-        User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
-        user.setLogin(userStringCellEditEvent.getNewValue());
-        if (!updateUser(user)) {
-            user.setLogin(userStringCellEditEvent.getOldValue());
+    public void busNameEditHandler(TableColumn.CellEditEvent<Bus, String> userStringCellEditEvent) {
+        Bus bus = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
+        bus.setName(userStringCellEditEvent.getNewValue());
+        if (!updateBus(bus)) {
+            bus.setName(userStringCellEditEvent.getOldValue());
         }
     }
 
-    public void emailEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
-        User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
-        user.setEmail(userStringCellEditEvent.getNewValue());
-        if (!updateUser(user)) {
-            user.setEmail(userStringCellEditEvent.getOldValue());
+    public void modelEditHandler(TableColumn.CellEditEvent<Bus, String> userStringCellEditEvent) {
+        Bus bus = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
+        bus.setModel(userStringCellEditEvent.getNewValue());
+        if (!updateBus(bus)) {
+            bus.setModel(userStringCellEditEvent.getOldValue());
         }
     }
 
-    public void passwordEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
-        User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
-        user.setPassword(userStringCellEditEvent.getNewValue());
-        if (!updateUser(user)) {
-            user.setPassword(userStringCellEditEvent.getOldValue());
+    public void numberEditHandler(TableColumn.CellEditEvent<Bus, String> userStringCellEditEvent) {
+        Bus bus = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
+        bus.setNumber(userStringCellEditEvent.getNewValue());
+        if (!updateBus(bus)) {
+            bus.setNumber(userStringCellEditEvent.getOldValue());
         }
     }
 
-    private boolean updateUser(User user) {
-        int update = jdbcTemplate.update("update test_user.users set login = ?, password = ?, email = ? where id = ?",
-                user.getLogin(), user.getPassword(), user.getEmail(), user.getId());
+    private boolean updateBus(Bus bus) {
+        int update = jdbcTemplate.update("update test_user.buses set bus_name = ?, bus_number = ?, bus_model = ? where id = ?",
+                bus.getName(), bus.getNumber(), bus.getModel(), bus.getId());
         return update > 0;
     }
 
-    private boolean deleteRow(User user) {
-        int delete = jdbcTemplate.update("delete from test_user.users where id = ?", user.getId());
+    private boolean deleteRow(Bus bus) {
+        int delete = jdbcTemplate.update("delete from test_user.buses where id = ?", bus.getId());
         return delete > 0;
     }
 
     public void deleteRow(ActionEvent actionEvent) {
-        int index = tableUsers.getSelectionModel().getFocusedIndex();
+        int index = tableBuses.getSelectionModel().getFocusedIndex();
         if (index == -1)
             return;
-        User user = tableUsers.getItems().get(index);
-        if (deleteRow(user)) {
-            tableUsers.getItems().remove(index);
+        Bus bus = tableBuses.getItems().get(index);
+        if (deleteRow(bus)) {
+            tableBuses.getItems().remove(index);
         }
     }
 }
