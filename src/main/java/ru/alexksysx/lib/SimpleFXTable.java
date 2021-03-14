@@ -5,7 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SimpleFXTable<T> {
@@ -15,8 +18,60 @@ public class SimpleFXTable<T> {
 
     private SimpleFXTable(Builder builder) {
         this.columns = builder.columns;
-        this.list = builder.list == null ? FXCollections.emptyObservableList() : FXCollections.observableList(builder.list);
+        list = FXCollections.observableArrayList();
+        list.addAll(builder.list == null ? Collections.emptyList() : builder.list);
         this.tableView = builder.tableView;
+        tableView.setItems(list);
+    }
+
+    /**
+     * Разрешить редактирование таблицы
+     * @param editable
+     */
+    public void setEditable(boolean editable) {
+        tableView.setEditable(editable);
+    }
+
+    /**
+     * Получить выделенный ряд в таблице
+     * @return выделенный элемент
+     */
+    public T getSelectedRow() {
+        return tableView.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * Получить индекс выбранного ряда
+     * @return индекс выбранного ряда. -1 в случае, если ряд не выбран.
+     */
+    public Integer getSelectedRowIndex() {
+        return tableView.getSelectionModel().getSelectedIndex();
+    }
+
+    /**
+     * Получить ряд по индексу
+     * @param index индекс
+     * @return ряд
+     */
+    public T getRowByIndex(int index) {
+        return tableView.getItems().get(index);
+    }
+
+    /**
+     * Удалить ряд по индексу
+     * @param index индекс ряда
+     * @return Предыдущее значение
+     */
+    public T removeRowByIndex(int index) {
+        return tableView.getItems().remove(index);
+    }
+
+    /**
+     * Добавить новую строку в таблицу
+     * @param item элемент
+     */
+    public void addRow(T item) {
+        list.add(item);
     }
 
     public static class Builder<T> {
@@ -26,16 +81,24 @@ public class SimpleFXTable<T> {
 
         public Builder(TableView<T> tableView) {
             this.tableView = tableView;
+            columns = new ArrayList<>();
         }
 
-        public <C> Builder withColumn(TableColumn column, String columnName) {
-            column.setCellFactory(new PropertyValueFactory<T, C>(columnName));
+        public Builder withIntegerColumn(TableColumn column, String columnName) {
+            column.setCellValueFactory(new PropertyValueFactory<T, Integer>(columnName));
+            columns.add(column);
+            return this;
+        }
+
+        public Builder withStringColumn(TableColumn column, String columnName) {
+            column.setCellValueFactory(new PropertyValueFactory<T, String>(columnName));
+            column.setCellFactory(TextFieldTableCell.forTableColumn());
             columns.add(column);
             return this;
         }
 
         public Builder withData(List<T> list) {
-            list = FXCollections.observableList(list);
+            this.list = list;
             return this;
         }
 

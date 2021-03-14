@@ -1,21 +1,20 @@
 package ru.alexksysx;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import ru.alexksysx.lib.SimpleFXTable;
 
 import java.util.List;
 
 
 public class Controller {
-    private ObservableList<User> usersData = FXCollections.observableArrayList();
+//    private ObservableList<User> usersData = FXCollections.observableArrayList();
     private JdbcTemplate jdbcTemplate = Main.getJdbcTemplate();
+
+    private SimpleFXTable<User> simpleFXTable;
 
     @FXML
     private TableView<User> tableUsers;
@@ -69,7 +68,8 @@ public class Controller {
         }
         if (update > 0) {
             User user = new User(id, login, password, email);
-            usersData.add(user);
+            simpleFXTable.addRow(user);
+//            usersData.add(user);
         }
         idInput.clear();
         loginInput.clear();
@@ -86,28 +86,41 @@ public class Controller {
     }
 
 
+//    @FXML
+//    private void initialize() {
+//        initData();
+//        // устанавливаем тип и значение которое должно хранится в колонке
+//        idColumn.setCellValueFactory(new PropertyValueFactory<User, Integer>("id"));
+//        loginColumn.setCellValueFactory(new PropertyValueFactory<User, String>("login"));
+//        passwordColumn.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
+//        emailColumn.setCellValueFactory(new PropertyValueFactory<User, String>("email"));
+//        // заполняем таблицу данными
+//        tableUsers.setItems(usersData);
+//        // делаем колонны изменяемыми
+//        tableUsers.setEditable(true);
+//        loginColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+//        passwordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+//        emailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+//    }
+
     @FXML
     private void initialize() {
-        initData();
-        // устанавливаем тип и значение которое должно хранится в колонке
-        idColumn.setCellValueFactory(new PropertyValueFactory<User, Integer>("id"));
-        loginColumn.setCellValueFactory(new PropertyValueFactory<User, String>("login"));
-        passwordColumn.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<User, String>("email"));
-        // заполняем таблицу данными
-        tableUsers.setItems(usersData);
-        // делаем колонны изменяемыми
-        tableUsers.setEditable(true);
-        loginColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        passwordColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        emailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        List<User> users = jdbcTemplate.query("select * from test_user.users", new UserRowMapper());
+        simpleFXTable = new SimpleFXTable.Builder<User>(tableUsers)
+                .withIntegerColumn(idColumn, "id")
+                .withStringColumn(loginColumn, "login")
+                .withStringColumn(passwordColumn, "password")
+                .withStringColumn(emailColumn, "email")
+                .withData(users)
+                .build();
+        simpleFXTable.setEditable(true);
     }
 
     // подготавливаем данные для таблицы
-    private void initData() {
-        List<User> users = jdbcTemplate.query("select * from test_user.users", new UserRowMapper());
-        usersData.addAll(users);
-    }
+//    private void initData() {
+//        List<User> users = jdbcTemplate.query("select * from test_user.users", new UserRowMapper());
+//        usersData.addAll(users);
+//    }
 
     public void loginEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
         User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
@@ -118,15 +131,16 @@ public class Controller {
     }
 
     public void emailEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
-        User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
+        User user = simpleFXTable.getSelectedRow();
         user.setEmail(userStringCellEditEvent.getNewValue());
         if (!updateUser(user)) {
             user.setEmail(userStringCellEditEvent.getOldValue());
+            System.out.println("EDITED!");
         }
     }
 
     public void passwordEditHandler(TableColumn.CellEditEvent<User, String> userStringCellEditEvent) {
-        User user = userStringCellEditEvent.getTableView().getItems().get(userStringCellEditEvent.getTablePosition().getRow());
+        User user = simpleFXTable.getSelectedRow();
         user.setPassword(userStringCellEditEvent.getNewValue());
         if (!updateUser(user)) {
             user.setPassword(userStringCellEditEvent.getOldValue());
@@ -145,12 +159,12 @@ public class Controller {
     }
 
     public void deleteRow(ActionEvent actionEvent) {
-        int index = tableUsers.getSelectionModel().getFocusedIndex();
+        int index = simpleFXTable.getSelectedRowIndex();
         if (index == -1)
             return;
-        User user = tableUsers.getItems().get(index);
+        User user = simpleFXTable.getRowByIndex(index);
         if (deleteRow(user)) {
-            tableUsers.getItems().remove(index);
+            simpleFXTable.removeRowByIndex(index);
         }
     }
 }
