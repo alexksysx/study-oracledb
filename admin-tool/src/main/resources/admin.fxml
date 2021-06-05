@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <tabs>
+    <Tab text="Цены">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Button layoutX="14.0" layoutY="313.0" mnemonicParsing="false" text="Добавить" />
+                  <TableView layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="565.0">
+                    <columns>
+                      <TableColumn prefWidth="183.0" text="CLASS" />
+                      <TableColumn minWidth="0.0" prefWidth="241.0" text="PRICE" />
+                    </columns>
+                  </TableView>
+                  <TextField layoutX="14.0" layoutY="266.0" />
+                  <TextField layoutX="211.0" layoutY="266.0" />
+                  <Label layoutX="14.0" layoutY="237.0" text="Класс" />
+                  <Label layoutX="211.0" layoutY="237.0" text="Цена" />
+                  <Button layoutX="123.0" layoutY="313.0" mnemonicParsing="false" text="Удалить" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Пункты">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="546.0">
+                    <columns>
+                      <TableColumn prefWidth="198.0" text="Название" />
+                      <TableColumn prefWidth="175.0" text="Расстояние" />
+                    </columns>
+                  </TableView>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Автобусы">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView layoutX="14.0" layoutY="37.0" prefHeight="119.0" prefWidth="408.0">
+                    <columns>
+                      <TableColumn prefWidth="177.0" text="Наименование" />
+                      <TableColumn prefWidth="100.0" text="Кол-во мест" />
+                        <TableColumn prefWidth="91.0" text="Класс" />
+                    </columns>
+                  </TableView>
+                  <Label layoutX="14.0" layoutY="14.0" text="Модели:" />
+                  <TableView layoutX="14.0" layoutY="194.0" prefHeight="96.0" prefWidth="294.0">
+                    <columns>
+                      <TableColumn prefWidth="147.0" text="Номер ГИБДД" />
+                    </columns>
+                  </TableView>
+                  <Label layoutX="14.0" layoutY="168.0" text="Автобусы данной модели:" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Маршруты и рейсы">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>

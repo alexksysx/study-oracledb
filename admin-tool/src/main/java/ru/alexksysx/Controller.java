@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.alexksysx.lib.SimpleFXTable;
+import ru.alexksysx.simplefx.table.SimpleFXTable;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class Controller {
         String email = emailInput.getText();
         int update;
         try {
-            update = jdbcTemplate.update("insert into test_user.users values (?, ?, ?, ?)", id, login, password, email);
+            update = jdbcTemplate.update("insert into users values (?, ?, ?, ?)", id, login, password, email);
         } catch (DuplicateKeyException e) {
             createAlert("Запись с таким ключём уже существует", "Ошибка");
             return;
@@ -69,7 +69,6 @@ public class Controller {
         if (update > 0) {
             User user = new User(id, login, password, email);
             simpleFXTable.addRow(user);
-//            usersData.add(user);
         }
         idInput.clear();
         loginInput.clear();
@@ -105,7 +104,7 @@ public class Controller {
 
     @FXML
     private void initialize() {
-        List<User> users = jdbcTemplate.query("select * from test_user.users", new UserRowMapper());
+        List<User> users = jdbcTemplate.query("select * from users", new UserRowMapper());
         simpleFXTable = new SimpleFXTable.Builder<User>(tableUsers)
                 .withIntegerColumn(idColumn, "id")
                 .withStringColumn(loginColumn, "login")
@@ -148,13 +147,13 @@ public class Controller {
     }
 
     private boolean updateUser(User user) {
-        int update = jdbcTemplate.update("update test_user.users set login = ?, password = ?, email = ? where id = ?",
+        int update = jdbcTemplate.update("update users set login = ?, password = ?, email = ? where id = ?",
                 user.getLogin(), user.getPassword(), user.getEmail(), user.getId());
         return update > 0;
     }
 
     private boolean deleteRow(User user) {
-        int delete = jdbcTemplate.update("delete from test_user.users where id = ?", user.getId());
+        int delete = jdbcTemplate.update("delete from users where id = ?", user.getId());
         return delete > 0;
     }
 

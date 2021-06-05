@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:controller="ru.alexksysx.Controller" id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <TableView fx:id="tableUsers" editable="true" layoutX="12.0" layoutY="62.0" prefHeight="324.0" prefWidth="600.0">
+            <columns>
+                <TableColumn fx:id="idColumn" prefWidth="80.0" text="Id" />
+                <TableColumn fx:id="loginColumn" onEditCommit="#loginEditHandler" prefWidth="150.0" text="Login" />
+                <TableColumn fx:id="passwordColumn" onEditCommit="#passwordEditHandler" prefWidth="150.0" text="Password" />
+                <TableColumn fx:id="emailColumn" onEditCommit="#emailEditHandler" prefWidth="220.0" text="Email" />
+            </columns>
+        </TableView>
+        <Label layoutX="14.0" layoutY="18.0" text="List all users:">
+            <font>
+                <Font name="Verdana" size="24.0" />
+            </font>
+        </Label>
+      <TextField fx:id="idInput" layoutX="14.0" layoutY="419.0" prefHeight="26.0" prefWidth="76.0" promptText="id" />
+      <TextField fx:id="loginInput" layoutX="90.0" layoutY="419.0" prefHeight="26.0" prefWidth="138.0" promptText="login" />
+      <TextField fx:id="passwordInput" layoutX="227.0" layoutY="419.0" prefHeight="26.0" prefWidth="159.0" promptText="password" />
+      <TextField fx:id="emailInput" layoutX="386.0" layoutY="419.0" promptText="email" />
+      <Button fx:id="insertButton" layoutX="21.0" layoutY="466.0" mnemonicParsing="false" onAction="#insertRow" prefHeight="26.0" prefWidth="106.0" text="Insert" />
+      <Button layoutX="150.0" layoutY="466.0" mnemonicParsing="false" onAction="#deleteRow" text="Delete Row" />
+    </children>
+</AnchorPane>
