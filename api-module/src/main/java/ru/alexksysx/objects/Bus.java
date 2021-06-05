@@ -5,8 +5,7 @@ public class Bus {
     private Long codModel;
     private String busNumber;
 
-    public Bus(Long codBus, Long codModel, String busNumber) {
-        this.codBus = codBus;
+    public Bus(Long codModel, String busNumber) {
         this.codModel = codModel;
         this.busNumber = busNumber;
     }

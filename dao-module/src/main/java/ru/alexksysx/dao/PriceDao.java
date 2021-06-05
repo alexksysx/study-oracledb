@@ -18,40 +18,35 @@ public class PriceDao implements ObjectDao<KmPrice>{
 
     @Override
     public KmPrice getOneById(Long id) {
-        String sql = "select * from km_price where class = ?";
+        String sql = "select * from km_prices where class = ?";
         return jdbcTemplate.queryForObject(sql, new KmPriceMapper(), id);
     }
 
     @Override
     public List<KmPrice> getAll() {
-        String sql = "select * from km_price";
+        String sql = "select * from km_prices";
         return jdbcTemplate.query(sql, new KmPriceMapper());
     }
 
     @Override
     public boolean deleteOneById(Long id) {
-        String sql = "delete from km_price where class = ?";
+        String sql = "delete from km_prices where class = ?";
         return jdbcTemplate.update(sql, id) > 0;
     }
 
     @Override
     public boolean updateOne(KmPrice object) {
-        String sql = "update km_price where class = ? and price = ?";
-        return jdbcTemplate.update(sql, object.getModelClass(), object.getPrice()) > 1;
+        String sql = "update km_prices set price = ? where class = ?";
+        int update = jdbcTemplate.update(sql, object.getPrice(), object.getModelClass());
+        return update > 0;
     }
 
     @Override
     public KmPrice createOne(KmPrice object) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = "insert into km_price(class, price) values(?, ?)";
-        jdbcTemplate.update(con -> {
-            PreparedStatement statement = con.prepareStatement(sql);
-            statement.setLong(1, object.getModelClass());
-            statement.setDouble(2, object.getPrice());
-            return statement;
-        }, keyHolder);
-        Long classValue = keyHolder.getKey().longValue();
-        object.setModelClass(classValue);
-        return object;
+        String sql = "insert into km_prices(class, price) values(?, ?)";
+        int update = jdbcTemplate.update(sql, object.getModelClass(), object.getPrice());
+        if (update == 1)
+            return object;
+        return null;
     }
 }

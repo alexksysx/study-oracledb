@@ -5,5 +5,7 @@ module testOracleConnect {
     requires java.sql;
     requires spring.tx;
     requires ru.alexksysx.simplefx;
+    requires ru.alexksysx.objects;
+    requires ru.alexksysx.dao;
     opens ru.alexksysx;
 }

@@ -3,24 +3,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.alexksysx.AdminController">
   <tabs>
     <Tab text="Цены">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <Button layoutX="14.0" layoutY="313.0" mnemonicParsing="false" text="Добавить" />
-                  <TableView layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="565.0">
+                  <Button layoutX="14.0" layoutY="313.0" mnemonicParsing="false" onAction="#addPriceRow" text="Добавить" />
+                  <TableView fx:id="priceTable" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="565.0">
                     <columns>
-                      <TableColumn prefWidth="183.0" text="CLASS" />
-                      <TableColumn minWidth="0.0" prefWidth="241.0" text="PRICE" />
+                      <TableColumn fx:id="classColumn" editable="false" prefWidth="291.0" text="CLASS" />
+                      <TableColumn fx:id="priceColumn" minWidth="0.0" onEditCommit="#editPriceRow" prefWidth="273.0" text="PRICE" />
                     </columns>
                   </TableView>
-                  <TextField layoutX="14.0" layoutY="266.0" />
-                  <TextField layoutX="211.0" layoutY="266.0" />
+                  <TextField fx:id="classInput" layoutX="14.0" layoutY="266.0" />
+                  <TextField fx:id="priceInput" layoutX="211.0" layoutY="266.0" />
                   <Label layoutX="14.0" layoutY="237.0" text="Класс" />
                   <Label layoutX="211.0" layoutY="237.0" text="Цена" />
-                  <Button layoutX="123.0" layoutY="313.0" mnemonicParsing="false" text="Удалить" />
+                  <Button layoutX="123.0" layoutY="313.0" mnemonicParsing="false" onAction="#deletePriceRow" text="Удалить" />
                </children></AnchorPane>
       </content>
     </Tab>
@@ -28,12 +28,18 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="546.0">
+                  <TableView fx:id="pointsTable" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="546.0">
                     <columns>
-                      <TableColumn prefWidth="198.0" text="Название" />
-                      <TableColumn prefWidth="175.0" text="Расстояние" />
+                      <TableColumn fx:id="pointsNameColumn" onEditCommit="#editPointsName" prefWidth="262.0" text="Название" />
+                      <TableColumn fx:id="pointsDistanceColumn" onEditCommit="#editPointsDistance" prefWidth="283.0" text="Расстояние" />
                     </columns>
                   </TableView>
+                  <TextField fx:id="pointsNameInput" layoutX="14.0" layoutY="253.0" />
+                  <TextField fx:id="pointsDistanceInput" layoutX="215.0" layoutY="253.0" />
+                  <Label layoutX="14.0" layoutY="230.0" text="Название" />
+                  <Label layoutX="215.0" layoutY="230.0" text="Расстояние" />
+                  <Button layoutX="16.0" layoutY="299.0" mnemonicParsing="false" onAction="#pointsAddRow" text="Добавить" />
+                  <Button layoutX="123.0" layoutY="299.0" mnemonicParsing="false" onAction="#pointsDeleteRow" text="Удалить" />
                </children></AnchorPane>
       </content>
     </Tab>
@@ -41,26 +47,41 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView layoutX="14.0" layoutY="37.0" prefHeight="119.0" prefWidth="408.0">
+                  <TableView fx:id="modelsTable" layoutX="14.0" layoutY="37.0" onMouseClicked="#selectModel" prefHeight="119.0" prefWidth="408.0">
                     <columns>
-                      <TableColumn prefWidth="177.0" text="Наименование" />
-                      <TableColumn prefWidth="100.0" text="Кол-во мест" />
-                        <TableColumn prefWidth="91.0" text="Класс" />
+                      <TableColumn fx:id="modelNameColumn" prefWidth="177.0" text="Наименование" />
+                      <TableColumn fx:id="modelPlacesColumn" prefWidth="100.0" text="Кол-во мест" />
+                        <TableColumn fx:id="modelClassColumn" prefWidth="130.0" text="Класс" />
                     </columns>
                   </TableView>
                   <Label layoutX="14.0" layoutY="14.0" text="Модели:" />
-                  <TableView layoutX="14.0" layoutY="194.0" prefHeight="96.0" prefWidth="294.0">
+                  <TableView fx:id="busesTable" layoutX="14.0" layoutY="257.0" prefHeight="96.0" prefWidth="294.0">
                     <columns>
-                      <TableColumn prefWidth="147.0" text="Номер ГИБДД" />
+                      <TableColumn fx:id="busNumberColumn" prefWidth="293.0" text="Номер ГИБДД" />
                     </columns>
                   </TableView>
-                  <Label layoutX="14.0" layoutY="168.0" text="Автобусы данной модели:" />
+                  <Label layoutX="15.0" layoutY="233.0" text="Автобусы данной модели:" />
+                  <ChoiceBox fx:id="modelsClassChoice" layoutX="391.0" layoutY="197.0" prefHeight="26.0" prefWidth="158.0" />
+                  <TextField fx:id="modelNameInput" layoutX="20.0" layoutY="197.0" />
+                  <TextField fx:id="modelPlacesInput" layoutX="206.0" layoutY="197.0" />
+                  <Label layoutX="20.0" layoutY="168.0" text="Наименование" />
+                  <Label layoutX="206.0" layoutY="168.0" text="Количество мест" />
+                  <Label layoutX="391.0" layoutY="168.0" text="Класс" />
+                  <Button layoutX="439.0" layoutY="71.0" mnemonicParsing="false" onAction="#addModelRow" text="Добавить модель" />
+                  <Button layoutX="443.0" layoutY="117.0" mnemonicParsing="false" onAction="#deleteModelRow" text="Удалить модель" />
+                  <TextField fx:id="busNumberInput" layoutX="337.0" layoutY="279.0" />
+                  <Label layoutX="337.0" layoutY="249.0" text="Номер ГИБДД" />
+                  <Button layoutX="323.0" layoutY="327.0" mnemonicParsing="false" onAction="#addBusRow" text="Добавить номер" />
+                  <Button layoutX="470.0" layoutY="327.0" mnemonicParsing="false" onAction="#deleteBusRow" text="Удалить номер" />
                </children></AnchorPane>
       </content>
     </Tab>
     <Tab text="Маршруты и рейсы">
       <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Pagination fx:id="tripsPagination" layoutX="2.0" layoutY="-1.0" prefHeight="369.0" prefWidth="600.0" />
+               </children></AnchorPane>
       </content>
     </Tab>
   </tabs>

@@ -5,8 +5,7 @@ public class Point {
     private String namePoint;
     private Long distance;
 
-    public Point(Long codPoint, String namePoint, Long distance) {
-        this.codPoint = codPoint;
+    public Point(String namePoint, Long distance) {
         this.namePoint = namePoint;
         this.distance = distance;
     }

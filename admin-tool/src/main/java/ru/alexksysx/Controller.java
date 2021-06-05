@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.alexksysx.simplefx.table.SimpleFXTable;
+import ru.alexksysx.simplefx.SimpleFXTable;
 
 import java.util.List;
 

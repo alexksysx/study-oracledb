@@ -6,8 +6,7 @@ public class Model {
     private Integer places;
     private Long modelClass;
 
-    public Model(Long codModel, String nameModel, Integer places, Long modelClass) {
-        this.codModel = codModel;
+    public Model(String nameModel, Integer places, Long modelClass) {
         this.nameModel = nameModel;
         this.places = places;
         this.modelClass = modelClass;
