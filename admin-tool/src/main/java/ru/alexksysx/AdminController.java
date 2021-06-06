@@ -6,11 +6,9 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.alexksysx.dao.*;
-import ru.alexksysx.objects.Bus;
-import ru.alexksysx.objects.KmPrice;
-import ru.alexksysx.objects.Model;
-import ru.alexksysx.objects.Point;
+import ru.alexksysx.objects.*;
 import ru.alexksysx.simplefx.SimpleFXTable;
+import ru.alexksysx.simplefx.SimpleFxPagination;
 
 public class AdminController {
     private JdbcTemplate jdbcTemplate = Main.getJdbcTemplate();
@@ -73,7 +71,10 @@ public class AdminController {
 
     // Маршруты и рейсы
     @FXML
-    private Pagination tripsPagination;
+    private Pagination routesPagination;
+    @FXML
+    private TextField routesNameInput;
+    private SimpleFxPagination<Route> simpleFxRoutesPagination;
 
 
 
@@ -110,6 +111,20 @@ public class AdminController {
                 .build();
         modelsClassChoice.setItems(simplePriceTable.getObservableList());
         modelsClassChoice.getSelectionModel().select(0);
+
+        // Заполнение pagination
+        simpleFxRoutesPagination = new SimpleFxPagination<>(routesPagination, routeDao.getAll());
+
+        // Заполнение названия маршрута
+        if (simpleFxRoutesPagination.getElement() != null)
+            routesNameInput.setText(simpleFxRoutesPagination.getElement().getNameRoute());
+
+        // обновление названия и рейсов при смене маршрута
+
+        simpleFxRoutesPagination.currentPageIndexProperty().addListener(((observableValue, number, t1) -> {
+            routesNameInput.setText(simpleFxRoutesPagination.getElement().getNameRoute());
+            // Здесь добавляются команды, выполняемые при смене страницы
+        }));
     }
 
     // Методы вкладки "Цены"
@@ -232,4 +247,6 @@ public class AdminController {
     }
 
     // Маршруты и рейсы
+
+
 }

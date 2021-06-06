@@ -16,6 +16,8 @@
         <module>simpleFx</module>
         <module>dao-module</module>
         <module>api-module</module>
+        <module>cashier-tool</module>
+        <module>dispatcher-tool</module>
     </modules>
 
     <build>

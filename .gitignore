@@ -1,4 +1,4 @@
 .idea
-testOracleConnect.iml
+*.iml
 target
 /bin/
