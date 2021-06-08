@@ -100,7 +100,7 @@
                       <TableColumn fx:id="hoursColumn" prefWidth="76.0" text="Часы" />
                         <TableColumn fx:id="minutesColumn" prefWidth="75.0" text="Минуты" />
                         <TableColumn fx:id="ticketsColumn" prefWidth="140.0" text="Билетов" />
-                        <TableColumn fx:id="busNumberColumn" prefWidth="167.0" text="Номер ГИБДД" />
+                        <TableColumn fx:id="tripBusNumberColumn" prefWidth="167.0" text="Номер ГИБДД" />
                     </columns>
                   </TableView>
                   <TextField layoutX="14.0" layoutY="329.0" prefHeight="26.0" prefWidth="94.0" />

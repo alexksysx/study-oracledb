@@ -5,15 +5,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import ru.alexksysx.dao.*;
 import ru.alexksysx.objects.*;
 import ru.alexksysx.simplefx.SimpleFXTable;
 import ru.alexksysx.simplefx.SimpleFxPagination;
 
+import java.util.Map;
+
 public class AdminController {
     private JdbcTemplate jdbcTemplate = Main.getJdbcTemplate();
-    private PriceDao priceDao;
-    private PointsDao pointsDao;
     private ModelsDao modelsDao;
     private BusesDao busesDao;
     private RouteDao routeDao;
@@ -31,6 +34,7 @@ public class AdminController {
     @FXML
     private TextField priceInput;
     private SimpleFXTable<KmPrice> simplePriceTable;
+    private PriceDao priceDao;
 
     // Вкладка с пунктами
     @FXML
@@ -44,6 +48,7 @@ public class AdminController {
     @FXML
     private TextField pointsDistanceInput;
     private SimpleFXTable<Point> simplePointTable;
+    private PointsDao pointsDao;
 
     // Вкладка с моделями автобусов
     @FXML
@@ -81,24 +86,26 @@ public class AdminController {
     @FXML
     public void initialize() {
         priceDao = new PriceDao(jdbcTemplate);
-        pointsDao = new PointsDao(jdbcTemplate);
-        modelsDao = new ModelsDao(jdbcTemplate);
-        busesDao = new BusesDao(jdbcTemplate);
-        routeDao = new RouteDao(jdbcTemplate);
-        tripDao = new TripDao(jdbcTemplate);
-
         simplePriceTable = new SimpleFXTable.Builder<KmPrice>(priceTable)
                 .withData(priceDao.getAll())
                 .withLongColumn(classColumn, "modelClass")
                 .withDoubleColumn(priceColumn, "price")
                 .isEditable(true)
                 .build();
+
+        pointsDao = new PointsDao(jdbcTemplate);
         simplePointTable = new SimpleFXTable.Builder<Point>(pointsTable)
                 .withData(pointsDao.getAll())
                 .withStringColumn(pointsNameColumn, "namePoint")
                 .withLongColumn(pointsDistanceColumn, "distance")
                 .isEditable(true)
                 .build();
+
+        modelsDao = new ModelsDao(jdbcTemplate);
+        busesDao = new BusesDao(jdbcTemplate);
+        routeDao = new RouteDao(jdbcTemplate);
+        tripDao = new TripDao(jdbcTemplate);
+
         simpleModelsTable = new SimpleFXTable.Builder<Model>(modelsTable)
                 .withData(modelsDao.getAll())
                 .withStringColumn(modelNameColumn, "nameModel")
@@ -127,6 +134,13 @@ public class AdminController {
         }));
     }
 
+    // Пример вызова процедуры
+    public void testProc() {
+        SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withProcedureName("test_pro");
+        SqlParameterSource in = new MapSqlParameterSource().addValue("t1", 12).addValue("t2", "test");
+        Map<String, Object> out = call.execute(in);
+        Integer t = 10;
+    }
     // Методы вкладки "Цены"
 
     public void addPriceRow(ActionEvent actionEvent) {
@@ -142,11 +156,10 @@ public class AdminController {
 
     public void deletePriceRow(ActionEvent actionEvent) {
         KmPrice price = simplePriceTable.getSelectedRow();
-        Integer selectedRowIndex = simplePriceTable.getSelectedRowIndex();
         if (price != null) {
             boolean deleted = priceDao.deleteOneById(price.getModelClass());
             if (deleted)
-                simplePriceTable.removeRowByIndex(selectedRowIndex);
+                simplePriceTable.removeElement(price);
         }
     }
 
@@ -172,11 +185,10 @@ public class AdminController {
 
     public void pointsDeleteRow(ActionEvent actionEvent) {
         Point point = simplePointTable.getSelectedRow();
-        Integer selectedRowIndex = simplePointTable.getSelectedRowIndex();
         if (point != null) {
             boolean deleted = pointsDao.deleteOneById(point.getCodPoint());
             if (deleted)
-                simplePointTable.removeRowByIndex(selectedRowIndex);
+                simplePointTable.removeElement(point);
         }
     }
 

@@ -105,6 +105,10 @@ public class SimpleFXTable<T> {
         tableView.getItems().addAll(list);
     }
 
+    public void removeElement(T element) {
+        tableView.getItems().remove(element);
+    }
+
     public static class Builder<T> {
         private TableView<T> tableView;
         private List<TableColumn> columns;

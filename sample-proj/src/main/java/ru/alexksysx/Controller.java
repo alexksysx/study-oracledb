@@ -5,9 +5,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import ru.alexksysx.simplefx.SimpleFXTable;
 
 import java.util.List;
+import java.util.Map;
 
 
 public class Controller {
@@ -166,4 +170,5 @@ public class Controller {
             simpleFXTable.removeRowByIndex(index);
         }
     }
+
 }

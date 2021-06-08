@@ -9,7 +9,7 @@ import ru.alexksysx.objects.Point;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-public class PointsDao implements ObjectDao<Point>{
+public class PointsDao {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -17,33 +17,23 @@ public class PointsDao implements ObjectDao<Point>{
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public Point getOneById(Long id) {
-        String sql = "select * from points where cod_point = ?";
-        return jdbcTemplate.queryForObject(sql, new PointMapper(), id);
-    }
-
-    @Override
     public List<Point> getAll() {
         String sql = "select * from points";
         return jdbcTemplate.query(sql, new PointMapper());
     }
 
-    @Override
     public boolean deleteOneById(Long id) {
         String sql = "delete from points where cod_point = ?";
         int update = jdbcTemplate.update(sql, id);
         return update > 0;
     }
 
-    @Override
     public boolean updateOne(Point object) {
         String sql = "update points set name_point = ?, distance = ? where cod_point = ?";
         int update = jdbcTemplate.update(sql, object.getNamePoint(), object.getDistance(), object.getCodPoint());
         return update > 0;
     }
 
-    @Override
     public Point createOne(Point object) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "insert into points(name_point, distance) values (?, ?)";

@@ -36,4 +36,9 @@ public class Point {
     public void setDistance(Long distance) {
         this.distance = distance;
     }
+
+    @Override
+    public String toString() {
+        return namePoint;
+    }
 }
