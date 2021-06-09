@@ -55,8 +55,9 @@ public class SimpleFxPagination<T> {
 
     public void addPage(T object) {
         list.add(object);
-        pagination.setPageCount(list.size() - 1);
         updateTextField();
+        pagination.setPageCount(list.size());
+        pagination.setCurrentPageIndex(pagination.getPageCount());
     }
 
     public void deletePage() {
@@ -64,6 +65,7 @@ public class SimpleFxPagination<T> {
             return;
         list.remove(pagination.getCurrentPageIndex());
         updateTextField();
+        pagination.setPageCount(list.size());
     }
 
     public IntegerProperty currentPageIndexProperty() {

@@ -36,4 +36,9 @@ public class Bus {
     public void setBusNumber(String busNumber) {
         this.busNumber = busNumber;
     }
+
+    @Override
+    public String toString() {
+        return busNumber;
+    }
 }

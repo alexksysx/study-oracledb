@@ -4,8 +4,7 @@ public class Route {
     private Long codRoute;
     private String nameRoute;
 
-    public Route(Long codRoute, String nameRoute) {
-        this.codRoute = codRoute;
+    public Route(String nameRoute) {
         this.nameRoute = nameRoute;
     }
 

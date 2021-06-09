@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="430.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.alexksysx.AdminController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="430.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.alexksysx.AdminController">
   <tabs>
     <Tab text="Цены">
       <content>
@@ -81,19 +81,19 @@
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
                   <Pagination fx:id="routesPagination" layoutX="2.0" layoutY="-1.0" prefHeight="399.0" prefWidth="600.0" />
-                  <TextField fx:id="routesNameInput" layoutX="14.0" layoutY="27.0" />
+                  <TextField fx:id="routesNameInput" layoutX="14.0" layoutY="27.0" onAction="#updateRouteName" />
                   <TextField fx:id="routesAddInput" layoutX="444.0" layoutY="40.0" prefHeight="26.0" prefWidth="140.0" />
-                  <Button layoutX="439.0" layoutY="74.0" mnemonicParsing="false" text="Добавить маршрут" />
+                  <Button layoutX="439.0" layoutY="74.0" mnemonicParsing="false" onAction="#addRouteRow" text="Добавить маршрут" />
                   <Label layoutX="14.0" layoutY="6.0" text="Название маршрута:" />
                   <Label layoutX="446.0" layoutY="19.0" text="Добавить маршрут:" />
-                  <Button layoutX="202.0" layoutY="27.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="153.0" text="Удалить маршрут" />
+                  <Button layoutX="202.0" layoutY="27.0" mnemonicParsing="false" onAction="#deleteRouteRow" prefHeight="26.0" prefWidth="153.0" text="Удалить маршрут" />
                   <TableView fx:id="routesPointsTable" layoutX="16.0" layoutY="60.0" prefHeight="127.0" prefWidth="200.0">
                     <columns>
                       <TableColumn fx:id="routesPointsColumn" prefWidth="199.0" text="Пункты" />
                     </columns>
                   </TableView>
                   <ChoiceBox fx:id="tripsPointsChoice" layoutX="225.0" layoutY="61.0" prefWidth="150.0" />
-                  <Button layoutX="225.0" layoutY="98.0" mnemonicParsing="false" text="Добавить пункт" />
+                  <Button layoutX="225.0" layoutY="98.0" mnemonicParsing="false" onAction="#addPointToRoute" text="Добавить пункт" />
                   <TableView fx:id="tripsTable" layoutX="3.0" layoutY="199.0" prefHeight="106.0" prefWidth="573.0">
                     <columns>
                       <TableColumn fx:id="weekDayColumn" prefWidth="114.0" text="День недели" />
@@ -107,13 +107,15 @@
                   <TextField layoutX="116.0" layoutY="329.0" prefHeight="26.0" prefWidth="59.0" />
                   <TextField layoutX="181.0" layoutY="329.0" prefHeight="26.0" prefWidth="70.0" />
                   <TextField layoutX="254.0" layoutY="329.0" prefHeight="26.0" prefWidth="72.0" />
-                  <ChoiceBox layoutX="336.0" layoutY="329.0" prefHeight="26.0" prefWidth="101.0" />
+                  <ChoiceBox fx:id="busRouteChoice" layoutX="336.0" layoutY="329.0" onMouseClicked="#updateBusChoiceBox" prefHeight="26.0" prefWidth="101.0" />
                   <Button layoutX="471.0" layoutY="329.0" mnemonicParsing="false" text="Добавить рейс" />
                   <Label layoutX="14.0" layoutY="313.0" text="День недели" />
                   <Label layoutX="116.0" layoutY="313.0" text="Часы" />
                   <Label layoutX="184.0" layoutY="313.0" text="Минуты" />
                   <Label layoutX="254.0" layoutY="313.0" text="Билетов" />
                   <Label layoutX="337.0" layoutY="313.0" text="Номер ГИБДД" />
+                  <Button layoutX="225.0" layoutY="141.0" mnemonicParsing="false" onAction="#removePointFromRoute" text="Удалить пункт" />
+                  <Button layoutX="471.0" layoutY="357.0" mnemonicParsing="false" text="Удалить рейс" />
                </children></AnchorPane>
       </content>
     </Tab>

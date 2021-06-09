@@ -1,5 +1,6 @@
 package ru.alexksysx;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -79,7 +80,19 @@ public class AdminController {
     private Pagination routesPagination;
     @FXML
     private TextField routesNameInput;
+    @FXML
+    private TextField routesAddInput;
+    @FXML
+    private ChoiceBox<Point> tripsPointsChoice;
+    @FXML
+    private ChoiceBox<Bus> busRouteChoice;
+    @FXML
+    private TableView<Point> routesPointsTable;
+    @FXML
+    private TableColumn<Point, String> routesPointsColumn;
     private SimpleFxPagination<Route> simpleFxRoutesPagination;
+    private SimpleFXTable<Point> simpleRoutePointsTable;
+    private PointsRoutesDao pointsRoutesDao;
 
 
 
@@ -119,17 +132,34 @@ public class AdminController {
         modelsClassChoice.setItems(simplePriceTable.getObservableList());
         modelsClassChoice.getSelectionModel().select(0);
 
+
+        // Маршруты и рейсы
+
+        pointsRoutesDao = new PointsRoutesDao(jdbcTemplate);
+        simpleRoutePointsTable = new SimpleFXTable.Builder<>(routesPointsTable)
+                .withStringColumn(routesPointsColumn, "namePoint")
+                .build();
+        tripsPointsChoice.setItems(simplePointTable.getObservableList());
+        tripsPointsChoice.getSelectionModel().select(0);
+        updateBusChoiceBox(null);
         // Заполнение pagination
         simpleFxRoutesPagination = new SimpleFxPagination<>(routesPagination, routeDao.getAll());
 
         // Заполнение названия маршрута
-        if (simpleFxRoutesPagination.getElement() != null)
+        if (simpleFxRoutesPagination.getElement() != null) {
             routesNameInput.setText(simpleFxRoutesPagination.getElement().getNameRoute());
+            // Заполнение пунктов маршрута
+            simpleRoutePointsTable.setElementList(
+                    pointsRoutesDao.getPointsFromRoute(simpleFxRoutesPagination.getElement().getCodRoute()));
+        }
 
         // обновление названия и рейсов при смене маршрута
 
         simpleFxRoutesPagination.currentPageIndexProperty().addListener(((observableValue, number, t1) -> {
             routesNameInput.setText(simpleFxRoutesPagination.getElement().getNameRoute());
+            simpleRoutePointsTable.cleanTable();
+            simpleRoutePointsTable.setElementList(
+                    pointsRoutesDao.getPointsFromRoute(simpleFxRoutesPagination.getElement().getCodRoute()));
             // Здесь добавляются команды, выполняемые при смене страницы
         }));
     }
@@ -259,6 +289,53 @@ public class AdminController {
     }
 
     // Маршруты и рейсы
+    public void addRouteRow(ActionEvent actionEvent) {
+        String routeName = routesAddInput.getText();
+        Route route = routeDao.createOne(new Route(routeName));
+        if (route.getCodRoute() != null) {
+            simpleFxRoutesPagination.addPage(route);
+            routesNameInput.setText(route.getNameRoute());
+        }
+    }
 
+    public void deleteRouteRow(ActionEvent actionEvent) {
+        Route route = simpleFxRoutesPagination.getElement();
+        if (route == null)
+            return;
+        if (routeDao.deleteOneById(route.getCodRoute())) {
+            simpleFxRoutesPagination.deletePage();
+            routesNameInput.setText(simpleFxRoutesPagination.getElement().getNameRoute());
+        }
+    }
 
+    public void updateRouteName(ActionEvent actionEvent) {
+        Route route = simpleFxRoutesPagination.getElement();
+        String oldName = route.getNameRoute();
+        route.setNameRoute(routesNameInput.getText());
+        if (!routeDao.updateOne(route)) {
+            route.setNameRoute(oldName);
+            routesNameInput.setText(oldName);
+        }
+    }
+
+    public void updateBusChoiceBox(MouseEvent mouseEvent) {
+        busRouteChoice.setItems(FXCollections.observableList(busesDao.getAll()));
+    }
+
+    public void addPointToRoute(ActionEvent actionEvent) {
+        Point point = tripsPointsChoice.getSelectionModel().getSelectedItem();
+        Route route = simpleFxRoutesPagination.getElement();
+        if (pointsRoutesDao.addPointToRoute(route.getCodRoute(), point.getCodPoint())) {
+            simpleRoutePointsTable.addRow(point);
+        }
+    }
+
+    public void removePointFromRoute(ActionEvent actionEvent) {
+        Point point = simpleRoutePointsTable.getSelectedRow();
+        if (point == null)
+            return;
+        Route route = simpleFxRoutesPagination.getElement();
+        if (pointsRoutesDao.removePointFromRoute(route.getCodRoute(), point.getCodPoint()))
+            simpleRoutePointsTable.removeElement(point);
+    }
 }

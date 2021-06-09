@@ -48,7 +48,7 @@ public class RouteDao implements ObjectDao<Route>{
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(sql, new String[]{"cod_route"});
-            statement.setString(1, "name_route");
+            statement.setString(1, object.getNameRoute());
             return statement;
         }, keyHolder);
         Long key = keyHolder.getKey().longValue();

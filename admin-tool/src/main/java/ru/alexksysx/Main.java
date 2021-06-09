@@ -32,12 +32,12 @@ public class Main extends Application {
 //        DataSource ds = new DriverManagerDataSource("jdbc:h2:~/db_test;AUTO_SERVER=TRUE;MODE=oracle", "test_user", "test_user");
 //        Oracle test_user
 
-//        DataSource ds = new DriverManagerDataSource(
-//                "jdbc:oracle:thin:@localhost:1527:orcl",
-//                "test_user", "test_user");
         DataSource ds = new DriverManagerDataSource(
-                "jdbc:oracle:thin:@192.168.0.15:1527:orcl",
+                "jdbc:oracle:thin:@localhost:1527:orcl",
                 "test_user", "test_user");
+//        DataSource ds = new DriverManagerDataSource(
+//                "jdbc:oracle:thin:@192.168.0.15:1527:orcl",
+//                "test_user", "test_user");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(ds);
 
         return jdbcTemplate;
