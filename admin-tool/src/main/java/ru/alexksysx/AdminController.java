@@ -18,8 +18,6 @@ import java.util.Map;
 
 public class AdminController {
     private JdbcTemplate jdbcTemplate = Main.getJdbcTemplate();
-    private ModelsDao modelsDao;
-    private BusesDao busesDao;
     private RouteDao routeDao;
     private TripDao tripDao;
 
@@ -74,6 +72,8 @@ public class AdminController {
     private TextField busNumberInput;
     private SimpleFXTable<Model> simpleModelsTable;
     private SimpleFXTable<Bus> simpleBusTable;
+    private ModelsDao modelsDao;
+    private BusesDao busesDao;
 
     // Маршруты и рейсы
     @FXML
@@ -114,11 +114,9 @@ public class AdminController {
                 .isEditable(true)
                 .build();
 
+
         modelsDao = new ModelsDao(jdbcTemplate);
         busesDao = new BusesDao(jdbcTemplate);
-        routeDao = new RouteDao(jdbcTemplate);
-        tripDao = new TripDao(jdbcTemplate);
-
         simpleModelsTable = new SimpleFXTable.Builder<Model>(modelsTable)
                 .withData(modelsDao.getAll())
                 .withStringColumn(modelNameColumn, "nameModel")
@@ -134,7 +132,8 @@ public class AdminController {
 
 
         // Маршруты и рейсы
-
+        routeDao = new RouteDao(jdbcTemplate);
+        tripDao = new TripDao(jdbcTemplate);
         pointsRoutesDao = new PointsRoutesDao(jdbcTemplate);
         simpleRoutePointsTable = new SimpleFXTable.Builder<>(routesPointsTable)
                 .withStringColumn(routesPointsColumn, "namePoint")
@@ -262,10 +261,9 @@ public class AdminController {
 
     public void deleteModelRow(ActionEvent actionEvent) {
         Model model = simpleModelsTable.getSelectedRow();
-        Integer selectedRowIndex = simpleModelsTable.getSelectedRowIndex();
         if (model != null)
             if (modelsDao.deleteOneById(model.getCodModel()))
-                simpleModelsTable.removeRowByIndex(selectedRowIndex);
+                simpleModelsTable.removeElement(model);
     }
 
     public void addBusRow(ActionEvent actionEvent) {
@@ -282,10 +280,9 @@ public class AdminController {
 
     public void deleteBusRow(ActionEvent actionEvent) {
         Bus bus = simpleBusTable.getSelectedRow();
-        Integer selectedRowIndex = simpleBusTable.getSelectedRowIndex();
         if(bus != null)
             if(busesDao.deleteOneById(bus.getCodBus()))
-                simpleBusTable.removeRowByIndex(selectedRowIndex);
+                simpleBusTable.removeElement(bus);
     }
 
     // Маршруты и рейсы

@@ -17,3 +17,4 @@ public class ModelMapper implements RowMapper<Model> {
         return model;
     }
 }
+

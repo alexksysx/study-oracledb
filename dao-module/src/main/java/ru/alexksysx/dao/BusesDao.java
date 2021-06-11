@@ -9,40 +9,30 @@ import ru.alexksysx.objects.Bus;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-public class BusesDao implements ObjectDao<Bus>{
+public class BusesDao {
     private JdbcTemplate jdbcTemplate;
 
     public BusesDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public Bus getOneById(Long id) {
-        String sql = "select * from buses where cod_bus = ?";
-        return jdbcTemplate.queryForObject(sql, new BusMapper(), id);
-    }
-
-    @Override
     public List<Bus> getAll() {
         String sql = "select * from buses";
         return jdbcTemplate.query(sql, new BusMapper());
     }
 
-    @Override
     public boolean deleteOneById(Long id) {
         String sql = "delete from buses where cod_bus = ?";
         int update = jdbcTemplate.update(sql, id);
         return update > 0;
     }
 
-    @Override
     public boolean updateOne(Bus object) {
         String sql = "update buses set bus_number = ?, cod_model = ? where cod_bus = ?";
         int update = jdbcTemplate.update(sql, object.getBusNumber(), object.getCodModel(), object.getCodBus());
         return update > 0;
     }
 
-    @Override
     public Bus createOne(Bus object) {
         String sql = "insert into buses(bus_number, cod_model) values (?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();

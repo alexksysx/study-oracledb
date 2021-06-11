@@ -9,33 +9,23 @@ import ru.alexksysx.objects.Model;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-public class ModelsDao implements ObjectDao<Model>{
+public class ModelsDao {
     private JdbcTemplate jdbcTemplate;
-
     public ModelsDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public Model getOneById(Long id) {
-        String sql = "select * from models where cod_model = ?";
-        return jdbcTemplate.queryForObject(sql, new ModelMapper(), id);
-    }
-
-    @Override
     public List<Model> getAll() {
         String sql = "select * from models";
         return jdbcTemplate.query(sql, new ModelMapper());
     }
 
-    @Override
     public boolean deleteOneById(Long id) {
         String sql = "delete from models where cod_model = ?";
         int update = jdbcTemplate.update(sql, id);
         return update > 0;
     }
 
-    @Override
     public boolean updateOne(Model object) {
         String sql = "update models set name_model = ?, places = ?, class = ? where cod_model = ?";
         int update = jdbcTemplate.update(sql, new ModelMapper(), object.getNameModel(), object.getPlaces(),
@@ -43,7 +33,6 @@ public class ModelsDao implements ObjectDao<Model>{
         return update > 0;
     }
 
-    @Override
     public Model createOne(Model object) {
         String sql = "insert into models(name_model, places, class) values(?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
