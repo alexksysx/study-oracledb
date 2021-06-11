@@ -83,17 +83,37 @@ public class AdminController {
     @FXML
     private TextField routesAddInput;
     @FXML
+    private TextField dayOfWeekInput;
+    @FXML
+    private TextField hoursInput;
+    @FXML
+    private TextField minutesInput;
+    @FXML
+    private TextField ticketsInput;
+    @FXML
     private ChoiceBox<Point> tripsPointsChoice;
     @FXML
     private ChoiceBox<Bus> busRouteChoice;
     @FXML
     private TableView<Point> routesPointsTable;
     @FXML
+    private TableView<Trip> tripsTable;
+    @FXML
+    private TableColumn<Trip, Integer> weekDayColumn;
+    @FXML
+    private TableColumn<Trip, Integer> hoursColumn;
+    @FXML
+    private TableColumn<Trip, Integer> minutesColumn;
+    @FXML
+    private TableColumn<Trip, Integer> ticketsColumn;
+    @FXML
+    private TableColumn<Trip, String> tripBusNumberColumn;
+    @FXML
     private TableColumn<Point, String> routesPointsColumn;
     private SimpleFxPagination<Route> simpleFxRoutesPagination;
     private SimpleFXTable<Point> simpleRoutePointsTable;
+    private SimpleFXTable<Trip> simpleTripsTable;
     private PointsRoutesDao pointsRoutesDao;
-
 
 
     @FXML
@@ -138,12 +158,18 @@ public class AdminController {
         simpleRoutePointsTable = new SimpleFXTable.Builder<>(routesPointsTable)
                 .withStringColumn(routesPointsColumn, "namePoint")
                 .build();
+        simpleTripsTable = new SimpleFXTable.Builder<>(tripsTable)
+                .withIntegerColumn(weekDayColumn, "weekDay")
+                .withIntegerColumn(hoursColumn, "hour")
+                .withIntegerColumn(minutesColumn, "minute")
+                .withIntegerColumn(ticketsColumn, "tickets")
+                .withStringColumn(tripBusNumberColumn, "busNumber")
+                .build();
         tripsPointsChoice.setItems(simplePointTable.getObservableList());
         tripsPointsChoice.getSelectionModel().select(0);
         updateBusChoiceBox(null);
         // Заполнение pagination
         simpleFxRoutesPagination = new SimpleFxPagination<>(routesPagination, routeDao.getAll());
-
         // Заполнение названия маршрута
         if (simpleFxRoutesPagination.getElement() != null) {
             routesNameInput.setText(simpleFxRoutesPagination.getElement().getNameRoute());
@@ -153,12 +179,13 @@ public class AdminController {
         }
 
         // обновление названия и рейсов при смене маршрута
-
         simpleFxRoutesPagination.currentPageIndexProperty().addListener(((observableValue, number, t1) -> {
-            routesNameInput.setText(simpleFxRoutesPagination.getElement().getNameRoute());
+            Route route = simpleFxRoutesPagination.getElement();
+            routesNameInput.setText(route.getNameRoute());
             simpleRoutePointsTable.cleanTable();
-            simpleRoutePointsTable.setElementList(
-                    pointsRoutesDao.getPointsFromRoute(simpleFxRoutesPagination.getElement().getCodRoute()));
+            simpleTripsTable.cleanTable();
+            simpleRoutePointsTable.setElementList(pointsRoutesDao.getPointsFromRoute(route.getCodRoute()));
+            simpleTripsTable.setElementList(tripDao.getTripsByCodRoute(route.getCodRoute()));
             // Здесь добавляются команды, выполняемые при смене страницы
         }));
     }
@@ -224,14 +251,14 @@ public class AdminController {
     public void editPointsName(TableColumn.CellEditEvent<Point, String> pointStringCellEditEvent) {
         Point point = simplePointTable.getSelectedRow();
         point.setNamePoint(pointStringCellEditEvent.getNewValue());
-        if(!pointsDao.updateOne(point))
+        if (!pointsDao.updateOne(point))
             point.setNamePoint(pointStringCellEditEvent.getOldValue());
     }
 
     public void editPointsDistance(TableColumn.CellEditEvent<Point, Long> pointLongCellEditEvent) {
         Point point = simplePointTable.getSelectedRow();
         point.setDistance(pointLongCellEditEvent.getNewValue());
-        if(!pointsDao.updateOne(point))
+        if (!pointsDao.updateOne(point))
             point.setDistance(pointLongCellEditEvent.getOldValue());
     }
 
@@ -280,8 +307,8 @@ public class AdminController {
 
     public void deleteBusRow(ActionEvent actionEvent) {
         Bus bus = simpleBusTable.getSelectedRow();
-        if(bus != null)
-            if(busesDao.deleteOneById(bus.getCodBus()))
+        if (bus != null)
+            if (busesDao.deleteOneById(bus.getCodBus()))
                 simpleBusTable.removeElement(bus);
     }
 
@@ -334,5 +361,29 @@ public class AdminController {
         Route route = simpleFxRoutesPagination.getElement();
         if (pointsRoutesDao.removePointFromRoute(route.getCodRoute(), point.getCodPoint()))
             simpleRoutePointsTable.removeElement(point);
+    }
+
+    public void addTripRow(ActionEvent actionEvent) {
+        Long codRoute = simpleFxRoutesPagination.getElement().getCodRoute();
+        Integer weekDay = Integer.parseInt(dayOfWeekInput.getText());
+        Integer hours = Integer.parseInt(hoursInput.getText());
+        Integer minutes = Integer.parseInt(minutesInput.getText());
+        Bus bus = busRouteChoice.getSelectionModel().getSelectedItem();
+        Integer tickets = modelsDao.getOneById(bus.getCodModel()).getPlaces();
+        Trip trip = tripDao.createOne(new Trip(weekDay, hours, minutes, codRoute, bus.getCodBus(), tickets));
+        if (trip.getCodTrip() != null) {
+            trip.setBusNumber(bus.getBusNumber());
+            simpleTripsTable.addRow(trip);
+            dayOfWeekInput.clear();
+            hoursInput.clear();
+            minutesInput.clear();
+        }
+    }
+
+    public void removeTripRow(ActionEvent actionEvent) {
+        Trip trip = simpleTripsTable.getSelectedRow();
+        if (trip != null)
+            if (tripDao.deleteOneById(trip.getCodTrip()))
+                simpleTripsTable.removeElement(trip);
     }
 }

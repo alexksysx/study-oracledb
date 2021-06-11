@@ -9,33 +9,26 @@ import ru.alexksysx.objects.Trip;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-public class TripDao implements ObjectDao<Trip> {
+public class TripDao {
     private JdbcTemplate jdbcTemplate;
 
     public TripDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Override
-    public Trip getOneById(Long id) {
-        String sql = "select * from trips where cod_trip = ?";
-        return jdbcTemplate.queryForObject(sql, new TripMapper(), id);
+    public List<Trip> getTripsByCodRoute(Long codRoute) {
+        String sql = "select t.COD_TRIP, t.WEEK_DAY, t.HOUR, t.MINUTE, t.TICKETS, t.COD_ROUTE, t.COD_BUS, b.BUS_NUMBER from trips t " +
+                "join buses b on b.cod_bus = t.cod_bus " +
+                "where cod_route = ?";
+        return jdbcTemplate.query(sql, new TripMapper(), codRoute);
     }
 
-    @Override
-    public List<Trip> getAll() {
-        String sql = "select * from trips";
-        return jdbcTemplate.query(sql, new TripMapper());
-    }
-
-    @Override
     public boolean deleteOneById(Long id) {
         String sql = "delete from trips where cod_trip = ?";
         int update = jdbcTemplate.update(sql, id);
         return update > 0;
     }
 
-    @Override
     public boolean updateOne(Trip object) {
         String sql = "update trips set cod_bus = ?, cod_route = ?, tickets = ?, " +
                 "minute = ?, hour = ?, week_day = ? where cod_trip = ?";
@@ -44,7 +37,6 @@ public class TripDao implements ObjectDao<Trip> {
         return update > 0;
     }
 
-    @Override
     public Trip createOne(Trip object) {
         String sql = "insert into trips(week_day, hour, minute, tickets, cod_route, cod_bus) values(?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();

@@ -15,6 +15,11 @@ public class ModelsDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public Model getOneById(Long id) {
+        String sql = "select * from models where cod_model = ?";
+        return jdbcTemplate.queryForObject(sql, new ModelMapper(), id);
+    }
+
     public List<Model> getAll() {
         String sql = "select * from models";
         return jdbcTemplate.query(sql, new ModelMapper());
@@ -48,3 +53,4 @@ public class ModelsDao {
         return object;
     }
 }
+

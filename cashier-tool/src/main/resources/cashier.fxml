@@ -3,24 +3,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Cashier">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.alexksysx.cashier.CashierController">
    <children>
       <ChoiceBox fx:id="pointChoice" layoutX="128.0" layoutY="40.0" prefWidth="150.0" />
       <Label layoutX="14.0" layoutY="45.0" text="Выбор пункта:" />
       <Label layoutX="14.0" layoutY="85.0" text="Расстояние = " />
       <Label fx:id="distanceLabel" layoutX="128.0" layoutY="85.0" />
-      <TableView layoutX="15.0" layoutY="116.0" prefHeight="200.0" prefWidth="548.0">
+      <TableView fx:id="cashierTable" layoutX="15.0" layoutY="116.0" prefHeight="200.0" prefWidth="548.0">
         <columns>
-          <TableColumn prefWidth="119.0" text="Маршрут" />
-          <TableColumn prefWidth="102.0" text="День" />
-            <TableColumn prefWidth="100.0" text="Время" />
-            <TableColumn prefWidth="102.0" text="Класс" />
-            <TableColumn prefWidth="124.0" text="Своб. мест" />
+          <TableColumn fx:id="routeNameColumn" prefWidth="119.0" text="Маршрут" />
+          <TableColumn fx:id="dayColumn" prefWidth="102.0" text="День" />
+            <TableColumn fx:id="timeColumn" prefWidth="100.0" text="Время" />
+            <TableColumn fx:id="classColumn" prefWidth="102.0" text="Класс" />
+            <TableColumn fx:id="placesColumn" prefWidth="124.0" text="Своб. мест" />
         </columns>
       </TableView>
-      <TextField layoutX="142.0" layoutY="342.0" />
+      <TextField fx:id="ticketsInput" layoutX="142.0" layoutY="342.0" />
       <Label layoutX="15.0" layoutY="347.0" text="Кол-во билетов:" />
-      <Button layoutX="378.0" layoutY="342.0" mnemonicParsing="false" text="Продажа" />
+      <Button layoutX="378.0" layoutY="342.0" mnemonicParsing="false" onAction="#sellTickets" text="Продажа" />
    </children>
 </AnchorPane>

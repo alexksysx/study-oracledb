@@ -17,6 +17,7 @@ public class TripMapper implements RowMapper<Trip> {
         trip.setTickets(rs.getInt("tickets"));
         trip.setWeekDay(rs.getInt("week_day"));
         trip.setCodRoute(rs.getLong("cod_route"));
+        trip.setBusNumber(rs.getString("bus_number"));
         return trip;
     }
 }

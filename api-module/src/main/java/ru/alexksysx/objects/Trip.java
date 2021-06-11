@@ -7,11 +7,11 @@ public class Trip {
     private Integer minute;
     private Long codRoute;
     private Long codBus;
+    private String busNumber;
     private Integer tickets;
 
-    public Trip(Long codTrip, Integer weekDay, Integer hour,
+    public Trip(Integer weekDay, Integer hour,
                 Integer minute, Long codRoute, Long codBus, Integer tickets) {
-        this.codTrip = codTrip;
         this.weekDay = weekDay;
         this.hour = hour;
         this.minute = minute;
@@ -77,5 +77,13 @@ public class Trip {
 
     public void setTickets(Integer tickets) {
         this.tickets = tickets;
+    }
+
+    public String getBusNumber() {
+        return busNumber;
+    }
+
+    public void setBusNumber(String busNumber) {
+        this.busNumber = busNumber;
     }
 }
