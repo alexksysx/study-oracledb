@@ -1,4 +1,4 @@
-package ru.alexksysx.cashier;
+package ru.alexksysx.dispatcher;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,7 +8,6 @@ import ru.alexksysx.mappers.PointMapper;
 import ru.alexksysx.objects.Point;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public class CashierDao {
     public String saleTickets(Long codTrip, Long codPoint, Integer ticketsNumber) throws Exception {
         SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withProcedureName("sale");
         SqlParameterSource in = new MapSqlParameterSource()
-                .addValue("cod_r", codTrip)
+                .addValue("cod_t", codTrip)
                 .addValue("cod_p", codPoint)
                 .addValue("n_ticket", ticketsNumber);
         Map<String, Object> ans = call.execute(in);

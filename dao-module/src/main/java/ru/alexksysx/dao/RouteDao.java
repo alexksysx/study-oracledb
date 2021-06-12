@@ -9,40 +9,29 @@ import ru.alexksysx.objects.Route;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-public class RouteDao implements ObjectDao<Route>{
+public class RouteDao {
     private JdbcTemplate jdbcTemplate;
 
     public RouteDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
-    @Override
-    public Route getOneById(Long id) {
-        String sql = "select * from routes where cod_route = ?";
-        return jdbcTemplate.queryForObject(sql, new RouteMapper(), id);
-    }
-
-    @Override
     public List<Route> getAll() {
         String sql = "select * from routes";
         return jdbcTemplate.query(sql, new RouteMapper());
     }
 
-    @Override
     public boolean deleteOneById(Long id) {
         String sql = "delete from routes where COD_ROUTE = ?";
         int update = jdbcTemplate.update(sql, id);
         return update > 0;
     }
 
-    @Override
     public boolean updateOne(Route object) {
         String sql = "update routes set name_route = ? where cod_route = ?";
         int update = jdbcTemplate.update(sql, object.getNameRoute(), object.getCodRoute());
         return update > 0;
     }
 
-    @Override
     public Route createOne(Route object) {
         String sql = "insert into routes(name_route) values (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();

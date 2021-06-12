@@ -1,4 +1,4 @@
-package ru.alexksysx.cashier;
+package ru.alexksysx.dispatcher;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -42,10 +42,8 @@ public class CashierController {
                 "test_user", "test_user");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(ds);
         cashierDao = new CashierDao(jdbcTemplate);
-
         pointChoice.setItems(FXCollections.observableList(cashierDao.getAllPoints()));
         pointChoice.getSelectionModel().select(0);
-
         simplePointsTripsTable = new SimpleFXTable.Builder<>(cashierTable)
                 .withStringColumn(routeNameColumn, "nameRoute")
                 .withIntegerColumn(dayColumn, "weekDay")
@@ -53,19 +51,11 @@ public class CashierController {
                 .withLongColumn(classColumn, "modelClass")
                 .withIntegerColumn(placesColumn, "freePlaces")
                 .build();
-
         Point firstPoint = pointChoice.getSelectionModel().getSelectedItem();
         if (firstPoint != null) {
             updateData();
         }
-//        pointChoice.getSelectionModel().selectedIndexProperty().addListener((observableValue, number, t1) -> {
-//            updateData();
-//        });
-        pointChoice.setOnAction(actionEvent ->
-        {
-            // Методы при смене города
-            updateData();
-        });
+        pointChoice.setOnAction(actionEvent -> updateData());
     }
 
     private void updateData() {

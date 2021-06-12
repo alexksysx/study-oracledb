@@ -18,8 +18,6 @@ import java.util.Map;
 
 public class AdminController {
     private JdbcTemplate jdbcTemplate = Main.getJdbcTemplate();
-    private RouteDao routeDao;
-    private TripDao tripDao;
 
     // Вкладка с ценами
     @FXML
@@ -89,8 +87,6 @@ public class AdminController {
     @FXML
     private TextField minutesInput;
     @FXML
-    private TextField ticketsInput;
-    @FXML
     private ChoiceBox<Point> tripsPointsChoice;
     @FXML
     private ChoiceBox<Bus> busRouteChoice;
@@ -114,6 +110,8 @@ public class AdminController {
     private SimpleFXTable<Point> simpleRoutePointsTable;
     private SimpleFXTable<Trip> simpleTripsTable;
     private PointsRoutesDao pointsRoutesDao;
+    private RouteDao routeDao;
+    private TripDao tripDao;
 
 
     @FXML
@@ -167,7 +165,7 @@ public class AdminController {
                 .build();
         tripsPointsChoice.setItems(simplePointTable.getObservableList());
         tripsPointsChoice.getSelectionModel().select(0);
-        updateBusChoiceBox(null);
+        busRouteChoice.setItems(FXCollections.observableList(busesDao.getAll()));
         // Заполнение pagination
         simpleFxRoutesPagination = new SimpleFxPagination<>(routesPagination, routeDao.getAll());
         // Заполнение названия маршрута
@@ -176,8 +174,9 @@ public class AdminController {
             // Заполнение пунктов маршрута
             simpleRoutePointsTable.setElementList(
                     pointsRoutesDao.getPointsFromRoute(simpleFxRoutesPagination.getElement().getCodRoute()));
+            simpleTripsTable.setElementList(tripDao.getTripsByCodRoute(
+                    simpleFxRoutesPagination.getElement().getCodRoute()));
         }
-
         // обновление названия и рейсов при смене маршрута
         simpleFxRoutesPagination.currentPageIndexProperty().addListener(((observableValue, number, t1) -> {
             Route route = simpleFxRoutesPagination.getElement();
@@ -186,17 +185,21 @@ public class AdminController {
             simpleTripsTable.cleanTable();
             simpleRoutePointsTable.setElementList(pointsRoutesDao.getPointsFromRoute(route.getCodRoute()));
             simpleTripsTable.setElementList(tripDao.getTripsByCodRoute(route.getCodRoute()));
-            // Здесь добавляются команды, выполняемые при смене страницы
         }));
+        // Обновление автомобилей
+        busRouteChoice.setOnAction(actionEvent -> {
+            busRouteChoice.setItems(FXCollections.observableList(busesDao.getAll()));
+        });
     }
 
     // Пример вызова процедуры
-    public void testProc() {
-        SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withProcedureName("test_pro");
-        SqlParameterSource in = new MapSqlParameterSource().addValue("t1", 12).addValue("t2", "test");
-        Map<String, Object> out = call.execute(in);
-        Integer t = 10;
-    }
+//    public void testProc() {
+//        SimpleJdbcCall call = new SimpleJdbcCall(jdbcTemplate).withProcedureName("test_pro");
+//        SqlParameterSource in = new MapSqlParameterSource().addValue("t1", 12).addValue("t2", "test");
+//        Map<String, Object> out = call.execute(in);
+//        Integer t = 10;
+//    }
+
     // Методы вкладки "Цены"
 
     public void addPriceRow(ActionEvent actionEvent) {
@@ -342,10 +345,6 @@ public class AdminController {
         }
     }
 
-    public void updateBusChoiceBox(MouseEvent mouseEvent) {
-        busRouteChoice.setItems(FXCollections.observableList(busesDao.getAll()));
-    }
-
     public void addPointToRoute(ActionEvent actionEvent) {
         Point point = tripsPointsChoice.getSelectionModel().getSelectedItem();
         Route route = simpleFxRoutesPagination.getElement();
@@ -369,8 +368,7 @@ public class AdminController {
         Integer hours = Integer.parseInt(hoursInput.getText());
         Integer minutes = Integer.parseInt(minutesInput.getText());
         Bus bus = busRouteChoice.getSelectionModel().getSelectedItem();
-        Integer tickets = modelsDao.getOneById(bus.getCodModel()).getPlaces();
-        Trip trip = tripDao.createOne(new Trip(weekDay, hours, minutes, codRoute, bus.getCodBus(), tickets));
+        Trip trip = tripDao.createOne(new Trip(weekDay, hours, minutes, codRoute, bus.getCodBus(), 0));
         if (trip.getCodTrip() != null) {
             trip.setBusNumber(bus.getBusNumber());
             simpleTripsTable.addRow(trip);

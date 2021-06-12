@@ -106,7 +106,7 @@
                   <TextField fx:id="dayOfWeekInput" layoutX="14.0" layoutY="329.0" prefHeight="26.0" prefWidth="94.0" />
                   <TextField fx:id="hoursInput" layoutX="116.0" layoutY="329.0" prefHeight="26.0" prefWidth="88.0" />
                   <TextField fx:id="minutesInput" layoutX="216.0" layoutY="329.0" prefHeight="26.0" prefWidth="105.0" />
-                  <ChoiceBox fx:id="busRouteChoice" layoutX="336.0" layoutY="329.0" onMouseClicked="#updateBusChoiceBox" prefHeight="26.0" prefWidth="101.0" />
+                  <ChoiceBox fx:id="busRouteChoice" layoutX="336.0" layoutY="329.0" prefHeight="26.0" prefWidth="101.0" />
                   <Button layoutX="471.0" layoutY="329.0" mnemonicParsing="false" onAction="#addTripRow" text="Добавить рейс" />
                   <Label layoutX="14.0" layoutY="313.0" text="День недели" />
                   <Label layoutX="131.0" layoutY="313.0" text="Часы" />

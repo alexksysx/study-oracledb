@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.alexksysx.cashier.CashierController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.alexksysx.dispatcher.CashierController">
    <children>
       <ChoiceBox fx:id="pointChoice" layoutX="128.0" layoutY="40.0" prefWidth="150.0" />
       <Label layoutX="14.0" layoutY="45.0" text="Выбор пункта:" />

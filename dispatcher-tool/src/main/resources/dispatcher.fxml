@@ -3,15 +3,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Dispatcher">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.alexksysx.dispatcher.DispatcherController">
    <children>
-      <TableView layoutX="11.0" layoutY="59.0" prefHeight="269.0" prefWidth="578.0">
+      <TableView fx:id="dispatcherTable" layoutX="11.0" layoutY="59.0" prefHeight="269.0" prefWidth="578.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
+          <TableColumn fx:id="ticketsColumn" prefWidth="136.0" text="Кол-во билетов" />
+          <TableColumn fx:id="hoursColumn" prefWidth="116.0" text="Часы" />
+            <TableColumn fx:id="minutesColumn" prefWidth="143.0" text="Минуты" />
+            <TableColumn fx:id="routeNameColumn" prefWidth="182.0" text="Маршрут" />
         </columns>
       </TableView>
-      <Button layoutX="494.0" layoutY="350.0" mnemonicParsing="false" text="Отправить" />
+      <Button layoutX="494.0" layoutY="350.0" mnemonicParsing="false" onAction="#sendTrip" text="Отправить" />
+      <Label fx:id="dateLabel" layoutX="14.0" layoutY="26.0" />
    </children>
 </AnchorPane>

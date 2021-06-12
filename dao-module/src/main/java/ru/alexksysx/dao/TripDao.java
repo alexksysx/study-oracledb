@@ -17,7 +17,8 @@ public class TripDao {
     }
 
     public List<Trip> getTripsByCodRoute(Long codRoute) {
-        String sql = "select t.COD_TRIP, t.WEEK_DAY, t.HOUR, t.MINUTE, t.TICKETS, t.COD_ROUTE, t.COD_BUS, b.BUS_NUMBER from trips t " +
+        String sql = "select t.COD_TRIP, t.WEEK_DAY, t.HOUR, t.MINUTE, t.TICKETS, t.COD_ROUTE, " +
+                "t.COD_BUS, b.BUS_NUMBER from trips t " +
                 "join buses b on b.cod_bus = t.cod_bus " +
                 "where cod_route = ?";
         return jdbcTemplate.query(sql, new TripMapper(), codRoute);
@@ -45,7 +46,7 @@ public class TripDao {
             statement.setInt(1, object.getWeekDay());
             statement.setInt(2, object.getHour());
             statement.setInt(3, object.getMinute());
-            statement.setInt(4, object.getTickets());
+            statement.setInt(4, 0);
             statement.setLong(5, object.getCodRoute());
             statement.setLong(6, object.getCodBus());
             return statement;

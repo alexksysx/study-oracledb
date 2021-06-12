@@ -1,4 +1,4 @@
-package ru.alexksysx.cashier;
+package ru.alexksysx.dispatcher;
 
 import org.springframework.jdbc.core.RowMapper;
 

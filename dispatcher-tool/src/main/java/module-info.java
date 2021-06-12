@@ -1,4 +1,4 @@
-module cashier {
+module dispatcher {
     requires javafx.controls;
     requires javafx.fxml;
     requires spring.jdbc;
